@@ -3,15 +3,18 @@ import {getGameByPlayerId} from "../db/games/games.js";
 import {PlayerId} from "../db/types.js";
 import {ClientResponse, FinishGamePayload, MessageType} from "../types.js";
 import {NotificationContext} from "./types.js";
+import {updateWinners} from "./updateWinners.js";
 
 export const finishGame = (context: NotificationContext<{winPlayer: PlayerId}>) => {
-    const {payload} = context;
+    const {payload, connectionContext} = context;
     const winPlayerId = payload ? payload.winPlayer : "";
 
     const game = getGameByPlayerId(winPlayerId);
     if (!game) {
         throw new Error(`game for player ${winPlayerId} does not exist`);
     }
+
+    // send notification about winner to the game players
     for (const playerId of game.playerIds) {
         const connection = getConnectionByPlayerId(playerId);
         if (!connection) {
@@ -28,4 +31,11 @@ export const finishGame = (context: NotificationContext<{winPlayer: PlayerId}>) 
             connection.socket.send(JSON.stringify(notification))
         }
     }
+
+    updateWinners({
+        connectionContext,
+        payload: {
+            winnerId: winPlayerId
+        }
+    },)
 }

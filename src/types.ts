@@ -20,7 +20,8 @@ export const enum MessageType {
     CHANGE_TURN = "turn",
     ATTACK = "attack",
     RANDOM_ATTACK = "randomAttack",
-    FINISH_GAME = "finish"
+    FINISH_GAME = "finish",
+    UPDATE_WINNERS = "update_winners"
 }
 
 export type MessageId = number
@@ -126,3 +127,10 @@ export interface RandomAttackRequestPayload {
 export interface FinishGamePayload {
     winPlayer: PlayerId;
 }
+
+export interface WinnerPayload {
+    name: string,
+    wins: number
+}
+
+export type UpdateWinnersPayload = WinnerPayload[];
