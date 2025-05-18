@@ -3,6 +3,8 @@ import {addConnection, removeConnection} from './connections.js';
 import {ClientRequest, ConnectionId, MessageType} from './types.js';
 import {generateConnectionId} from './utils.js';
 import {register} from './commands/register.js';
+import {createRoom} from './commands/createRoom.js';
+import {CommandContext} from './commands/types.js';
 
 const createServer = (port:number):WebSocketServer => {
     const server = new WebSocketServer({port});
@@ -27,12 +29,16 @@ const initializeConnection = (wss: WebSocketServer, ws:WebSocket) => {
         console.log(`received: id ${id}, ${JSON.stringify(event)}`);
         if (typeof event.data === 'string') {
             const message = JSON.parse(event.data) as ClientRequest;
+            const context: CommandContext = {
+                connectionContext: {server: wss, connection},
+                message
+            };
             switch (message.type) {
                 case MessageType.REGISTER:
-                    register({server: wss, connection}, message);
+                    register(context);
                     break; 
                 case MessageType.CREATE_ROOM:
-
+                    createRoom(context);
                     break;
                 default:
                     console.warn(`unrecognised message ${message.type}`);

@@ -1,10 +1,13 @@
-import {Player} from "./types.js";
+import {generatePlayerId} from "../utils.js";
+import {Player, PlayerId} from "./types.js";
 
 const players: Map<string, Player> = new Map();
 
 const registerPlayer = (username:string, password:string): Player => {
     players.set(username, {
-        username, password
+        id: generatePlayerId(),
+        username, 
+        password
     })
     return players.get(username)!;
 }
@@ -23,4 +26,11 @@ const hasPlayer = (username:string): boolean => {
     return players.has(username);
 }
 
-export {registerPlayer, hasPlayer, loginPlayer}
+const getPlayerById = (id:PlayerId): Player | null => {
+    for (const player of players.values()) {
+        if (player.id === id) return player;
+    }
+    return null;
+}
+
+export {registerPlayer, hasPlayer, loginPlayer, getPlayerById}

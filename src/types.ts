@@ -1,18 +1,21 @@
 import WebSocket from "ws";
+import {PlayerId, RoomId} from "./db/types.js";
 
 export type ConnectionId = string;
 
 export interface Connection {
-    id:ConnectionId;
-    socket:WebSocket;
+    id: ConnectionId;
+    socket: WebSocket;
+    playerId?: PlayerId;
 }
 
 export const enum MessageType {
     REGISTER = "reg",
-    CREATE_ROOM = "create_room"
+    CREATE_ROOM = "create_room",
+    UPDATE_ROOMS = "update_room",
 }
 
-export type MessageId = string
+export type MessageId = number
 
 export type MessageData = string;
 
@@ -27,13 +30,27 @@ export interface ClientRequest {
 export type ClientResponse = ClientRequest;
 
 export interface RegisterRequstPayload {
-    name:string;
-    password:string;
+    name: string;
+    password: string;
 }
 
 export interface RegisterResponsePayload {
-    name:string;
-    index: number;
+    name: string;
+    index: PlayerId;
     error: boolean,
     errorText: string,
 }
+
+export type CreateRoomRequestPayload = never;
+
+export interface RoomUserPayload {
+    name: string,
+    index: PlayerId,
+}
+
+export interface RoomPayload  {
+    roomId: RoomId,
+    roomUsers: RoomUserPayload[],
+}
+
+export type UpdateRoomsResponsePayload = RoomPayload[]
