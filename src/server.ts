@@ -35,12 +35,12 @@ const initializeConnection = (ws:WebSocket) => {
                     const response: ClientResponse = {
                         id: message.id,
                         type: message.type,
-                        data: {
+                        data: JSON.stringify({
                             name,
                             index: 0,
                             error: false,
                             errorText: ''
-                        } satisfies RegisterResponsePayload,
+                        } satisfies RegisterResponsePayload),
                     }
                     ws.send(JSON.stringify(response));
                     break; 

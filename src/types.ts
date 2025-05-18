@@ -23,11 +23,7 @@ export interface ClientRequest {
     data: MessageData
 }
 
-export interface ClientResponse {
-    type: MessageType,
-    id: MessageId,
-    data: MessagePayload
-}
+export type ClientResponse = ClientRequest;
 
 export interface RegisterRequstPayload {
     name:string;
