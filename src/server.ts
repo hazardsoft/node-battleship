@@ -9,7 +9,7 @@ const createServer = (port:number):WebSocketServer => {
         initializeConnection(ws);
     })
     server.on('listening', () => {
-        console.log(`server is listening at ${port}`);
+        console.log(`server is running: ${JSON.stringify(server.address())}`);
     })
     return server;
 }
