@@ -1,5 +1,5 @@
-export function main() {
-  return "Hello World";
-}
+import {env} from "process";
+import {createServer} from "./server.js";
 
-console.log(main());
+const port = Number(env.PORT) || 3000;
+createServer(port);
