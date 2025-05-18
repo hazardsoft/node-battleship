@@ -8,7 +8,7 @@ const addConnection = (id:ConnectionId, connection:WebSocket):Connection => {
     connectionsById.set(id, connection);
     connections.set(connection, id);
     return {
-        id, connection
+        id, socket: connection
     }
 }
 
@@ -22,7 +22,7 @@ const removeConnection = (id:ConnectionId) => {
 const getConnectionById = (id:ConnectionId):Connection | null => {
     if (connectionsById.has(id)) {
         return {
-            id, connection: connectionsById.get(id)!
+            id, socket: connectionsById.get(id)!
         }
     }
     return null;
@@ -31,7 +31,7 @@ const getConnectionById = (id:ConnectionId):Connection | null => {
 const getConnectionBySocket = (ws:WebSocket):Connection | null => {
     if (connections.has(ws)) {
         return {
-            id: connections.get(ws)!, connection: ws
+            id: connections.get(ws)!, socket: ws
         }
     }
     return null;

@@ -4,11 +4,12 @@ export type ConnectionId = string;
 
 export interface Connection {
     id:ConnectionId;
-    connection:WebSocket;
+    socket:WebSocket;
 }
 
 export const enum MessageType {
-    REGISTER = "reg"
+    REGISTER = "reg",
+    CREATE_ROOM = "create_room"
 }
 
 export type MessageId = string

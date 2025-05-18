@@ -1,13 +1,13 @@
 import WebSocket, {WebSocketServer} from 'ws';
 import {addConnection, removeConnection} from './connections.js';
-import {ClientRequest, ClientResponse, ConnectionId, MessageType, RegisterRequstPayload, RegisterResponsePayload} from './types.js';
+import {ClientRequest, ConnectionId, MessageType} from './types.js';
 import {generateConnectionId} from './utils.js';
-import {registerPlayer} from './db/players.js';
+import {register} from './commands/register.js';
 
 const createServer = (port:number):WebSocketServer => {
     const server = new WebSocketServer({port});
     server.on('connection', (ws:WebSocket) => {
-        initializeConnection(ws);
+        initializeConnection(server, ws);
     })
     server.on('listening', () => {
         console.log(`server is running: ${JSON.stringify(server.address())}`);
@@ -15,8 +15,9 @@ const createServer = (port:number):WebSocketServer => {
     return server;
 }
 
-const initializeConnection = (ws:WebSocket) => {
-    const {id, connection} = addConnection(generateConnectionId(), ws);
+const initializeConnection = (wss: WebSocketServer, ws:WebSocket) => {
+    const connection = addConnection(generateConnectionId(), ws);
+    const {id} = connection;
     console.log(`initialize connection: id ${id}`);
 
     ws.addEventListener('open', (event) => {
@@ -28,23 +29,11 @@ const initializeConnection = (ws:WebSocket) => {
             const message = JSON.parse(event.data) as ClientRequest;
             switch (message.type) {
                 case MessageType.REGISTER:
-                {
-                    const {name, password} = JSON.parse(message.data) as RegisterRequstPayload;
-                    registerPlayer(name, password);
-
-                    const response: ClientResponse = {
-                        id: message.id,
-                        type: message.type,
-                        data: JSON.stringify({
-                            name,
-                            index: 0,
-                            error: false,
-                            errorText: ''
-                        } satisfies RegisterResponsePayload),
-                    }
-                    ws.send(JSON.stringify(response));
+                    register({server: wss, connection}, message);
                     break; 
-                }
+                case MessageType.CREATE_ROOM:
+
+                    break;
                 default:
                     console.warn(`unrecognised message ${message.type}`);
                     break;
@@ -53,11 +42,11 @@ const initializeConnection = (ws:WebSocket) => {
     })
     ws.addEventListener('error', (event) => {
         console.error(`error: id ${id}, ${JSON.stringify(event)}`)
-        destroyConnection(id, connection);
+        destroyConnection(id, ws);
     })
     ws.addEventListener('close', ()=> {
         console.log(`closed: id ${id}`)
-        destroyConnection(id, connection);
+        destroyConnection(id, ws);
     })
 }
 
