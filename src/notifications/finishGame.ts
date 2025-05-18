@@ -1,6 +1,7 @@
 import {getConnectionByPlayerId} from "../connections.js";
 import {getGameByPlayerId} from "../db/games/games.js";
 import {PlayerId} from "../db/types.js";
+import {addWinner} from "../db/winners.js";
 import {ClientResponse, FinishGamePayload, MessageType} from "../types.js";
 import {NotificationContext} from "./types.js";
 import {updateWinners} from "./updateWinners.js";
@@ -32,10 +33,8 @@ export const finishGame = (context: NotificationContext<{winPlayer: PlayerId}>) 
         }
     }
 
-    updateWinners({
-        connectionContext,
-        payload: {
-            winnerId: winPlayerId
-        }
-    },)
+    // update wins for win player
+    addWinner(winPlayerId);
+    // notify all players with updated win statistics
+    updateWinners({connectionContext})
 }

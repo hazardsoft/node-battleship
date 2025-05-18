@@ -2,6 +2,7 @@ import {ClientResponse, RegisterRequestPayload, RegisterResponsePayload} from ".
 import {Command, CommandContext} from "./types.js";
 import {hasPlayer, loginPlayer, registerPlayer} from "../db/players.js";
 import {Player} from "../db/types.js";
+import {updateWinners} from "../notifications/updateWinners.js";
 
 export const register: Command = (context: CommandContext) => {
     const {connectionContext, message} = context;
@@ -17,17 +18,32 @@ export const register: Command = (context: CommandContext) => {
 
     if (player) {
         connectionContext.connection.playerId = player.id;
-    }
+
+        const response: ClientResponse = {
+            id: message.id,
+            type: message.type,
+            data: JSON.stringify({
+                name,
+                index: player.id,
+                error: false,
+                errorText: '',
+            } satisfies RegisterResponsePayload),
+        }
+        connectionContext.connection.socket.send(JSON.stringify(response));
     
-    const response: ClientResponse = {
-        id: message.id,
-        type: message.type,
-        data: JSON.stringify({
-            name,
-            index: player ? player.id : '',
-            error: !player,
-            errorText: player ? '' : 'incorrect credentials'
-        } satisfies RegisterResponsePayload),
+        // send actual winners table to the logged in user only
+        updateWinners({connectionContext, payload: {currentUserId: player.id}})
+    } else {
+        const response: ClientResponse = {
+            id: message.id,
+            type: message.type,
+            data: JSON.stringify({
+                name,
+                index: '',
+                error: true,
+                errorText: 'incorrect credentials'
+            } satisfies RegisterResponsePayload),
+        }
+        connectionContext.connection.socket.send(JSON.stringify(response));
     }
-    connectionContext.connection.socket.send(JSON.stringify(response));
 }
