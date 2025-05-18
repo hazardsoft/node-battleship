@@ -18,7 +18,8 @@ export const enum MessageType {
     ADD_SHIPS = "add_ships",
     START_GAME = "start_game",
     CHANGE_TURN = "turn",
-    ATTACK = "attack"
+    ATTACK = "attack",
+    RANDOM_ATTACK = "randomAttack"
 }
 
 export type MessageId = number
@@ -114,4 +115,9 @@ export interface AttackPayload {
     },
     currentPlayer: PlayerId,
     status: "miss" | "killed" | "shot",
+}
+
+export interface RandomAttackRequestPayload {
+    gameId: GameId,
+    indexPlayer: PlayerId
 }

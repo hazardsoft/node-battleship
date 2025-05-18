@@ -9,6 +9,10 @@ const isPositionBelongToShip = (ship:Ship, position: {x: number, y: number}):boo
     }
 }
 
+const getAvailableCells = (cells: Cell[]):Cell[] => {
+    return cells.filter(cell => !cell.isOpen);
+}
+
 interface Cell {
     position: {
         x:number,
@@ -53,6 +57,12 @@ export class Board {
             }
         }
         return false;
+    }
+
+    public getRandomCell():Cell {
+        const availableCells = getAvailableCells(this.cells);
+        const randomIndex = Math.ceil(Math.random() * (availableCells.length - 1));
+        return availableCells[randomIndex];
     }
 
     public isFull():boolean {
