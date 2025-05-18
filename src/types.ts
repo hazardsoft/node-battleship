@@ -31,7 +31,7 @@ export interface ClientRequest {
 
 export type ClientResponse = ClientRequest;
 
-export interface RegisterRequstPayload {
+export interface RegisterRequestPayload {
     name: string;
     password: string;
 }
