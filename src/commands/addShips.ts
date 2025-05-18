@@ -24,7 +24,7 @@ export const addShips: Command = (context: CommandContext) => {
         });
         turn({
             connectionContext,
-            payload: {gameId}
+            payload: {gameId, nextPlayerId: playerId}
         })
     }
 }

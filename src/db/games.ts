@@ -39,4 +39,28 @@ const addShipsToGameForPlayer = (gameId:GameId, playerId: PlayerId, ships: Ship[
     }
 }
 
-export {addGame, removeGame, getGameById, addShipsToGameForPlayer};
+const isHit = (gameId:GameId, playerId:PlayerId, position: {x:number, y:number}): boolean => {
+    const game = games.get(gameId);
+    if (game) {
+        const ships = game.playerShips.get(playerId);
+        if (ships) {
+            for (const ship of ships) {
+                if (isPositionBelongToShip(ship, position)) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+const isPositionBelongToShip = (ship:Ship, position: {x: number, y: number}):boolean => {
+    const {x, y} = position;
+    if (ship.direction) {
+        return x === ship.position.x && y >= ship.position.y && y <= ship.position.y + ship.length - 1;
+    } else {
+        return y === ship.position.y && x >= ship.position.x && x <= ship.position.x + ship.length - 1;
+    }
+}
+
+export {addGame, removeGame, getGameById, addShipsToGameForPlayer, isHit};

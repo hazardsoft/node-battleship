@@ -1,27 +1,22 @@
 import {getConnectionByPlayerId} from "../connections.js";
 import {getGameById} from "../db/games.js";
-import {GameId} from "../db/types.js";
+import {GameId, PlayerId} from "../db/types.js";
 import {ClientResponse, MessageType, TurnPayload} from "../types.js";
-import {getOpponentId} from "../utils.js";
 import {NotificationContext} from "./types.js";
 
-export const turn = (context: NotificationContext<{gameId: GameId}>) => {
+export const turn = (context: NotificationContext<{gameId:GameId, nextPlayerId: PlayerId}>) => {
     const {payload} = context;
     const gameId = payload ? payload.gameId : "";
+    const nextPlayerId = payload ? payload.nextPlayerId : "";
 
     const game = getGameById(gameId);
     if (!game) {
         throw new Error(`game ${gameId} does not exist`);
     }
-    const playerIds = Array.from(game.playerShips.keys());
-    const currentPlayerId = game.currentPlayerId || playerIds[0];
-    const opponentId = getOpponentId(playerIds, currentPlayerId);
-    if (!opponentId) {
-        throw new Error(`could not find opponent to player ${currentPlayerId}`)
-    }
     
-    game.currentPlayerId = opponentId;
+    game.currentPlayerId = nextPlayerId;
     // notify room players about change of turn
+    const playerIds = Array.from(game.playerShips.keys());
     for (const playerId of playerIds) {
         const connection = getConnectionByPlayerId(playerId);
         if (!connection) {
@@ -35,7 +30,7 @@ export const turn = (context: NotificationContext<{gameId: GameId}>) => {
             id: 0,
             type: MessageType.CHANGE_TURN,
             data: JSON.stringify({
-                currentPlayer: opponentId,
+                currentPlayer: nextPlayerId,
             } satisfies TurnPayload)
         }
         if (connection.socket.readyState === WebSocket.OPEN) {

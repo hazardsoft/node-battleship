@@ -1,5 +1,5 @@
 import WebSocket, {WebSocketServer} from "ws";
-import {GameId, PlayerId, RoomId} from "./db/types.js";
+import {GameId, Player, PlayerId, RoomId} from "./db/types.js";
 
 export type ConnectionId = string;
 
@@ -17,7 +17,8 @@ export const enum MessageType {
     CREATE_GAME = "create_game",
     ADD_SHIPS = "add_ships",
     START_GAME = "start_game",
-    CHANGE_TURN = "turn"
+    CHANGE_TURN = "turn",
+    ATTACK = "attack"
 }
 
 export type MessageId = number
@@ -97,4 +98,20 @@ export interface StartGamePayload {
 
 export interface TurnPayload {
     currentPlayer: PlayerId
+}
+
+export interface AttackRequestPayload {
+    gameId: GameId,
+    x: number,
+    y: number,
+    indexPlayer: PlayerId
+}
+
+export interface AttackPayload {
+    position: {
+        x: number,
+        y: number
+    },
+    currentPlayer: PlayerId,
+    status: "miss" | "killed" | "shot",
 }
