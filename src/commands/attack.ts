@@ -4,6 +4,7 @@ import {getConnectionByPlayerId} from "../connections.js";
 import {getOpponentId} from "../utils.js";
 import {turn} from "../notifications/turn.js";
 import {getGameById} from "../db/games/games.js";
+import {finishGame} from "../notifications/finishGame.js";
 
 export const attack: Command = (context: CommandContext) => {
     const {message, connectionContext} = context;
@@ -22,16 +23,15 @@ export const attack: Command = (context: CommandContext) => {
     if (!opponentPlayerId) {
         throw new Error(`could not find opponent to ${currentPlayerId} in game ${gameId}`);
     }
-    // const status = isHit(gameId, opponentPlayerId, {x, y}) ? 'shot' : 'miss';
-    const status = game.getBoard(opponentPlayerId)?.isHit({x, y}) ? 'shot' : 'miss';
+    const board = game.getBoard(opponentPlayerId);
+    if (!board) {
+        throw new Error(`no board for player ${opponentPlayerId}`);
+    }
+    const status = board.getHitResult({x, y});
     for (const playerId of game.playerIds) {
         const connection = getConnectionByPlayerId(playerId);
         if (!connection) {
             throw new Error(`connection for playerId ${playerId} does not exist`);
-        }
-        const ships = game.getBoard(playerId)?.getShips();
-        if (!ships) {
-            throw new Error(`player ${playerId} does not have ships`);
         }
         const notification: ClientResponse = {
             id: 0,
@@ -44,6 +44,19 @@ export const attack: Command = (context: CommandContext) => {
         }
         if (connection.socket.readyState === WebSocket.OPEN) {
             connection.socket.send(JSON.stringify(notification))
+        }
+    }
+
+    // if a ship is killed check if it was the last one
+    if (status === "killed") {
+        if (board.isAllShipsKilled()) {
+            finishGame({
+                connectionContext,
+                payload: {
+                    winPlayer: currentPlayerId
+                }
+            })
+            return;
         }
     }
 

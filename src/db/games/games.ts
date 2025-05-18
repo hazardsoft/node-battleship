@@ -25,4 +25,13 @@ const getGameById = (id:GameId):Game | null => {
     return null;
 }
 
-export {addGame, removeGame, getGameById};
+const getGameByPlayerId = (playerId:PlayerId): Game | null => {
+    for(const game of games.values()) {
+        if (game.playerIds.includes(playerId)) {
+            return game;
+        }
+    }
+    return null;
+}
+
+export {addGame, removeGame, getGameById, getGameByPlayerId};

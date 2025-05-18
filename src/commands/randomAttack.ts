@@ -4,6 +4,7 @@ import {getConnectionByPlayerId} from "../connections.js";
 import {getOpponentId} from "../utils.js";
 import {turn} from "../notifications/turn.js";
 import {getGameById} from "../db/games/games.js";
+import {finishGame} from "../notifications/finishGame.js";
 
 export const randomAttack: Command = (context: CommandContext) => {
     const {message, connectionContext} = context;
@@ -27,15 +28,15 @@ export const randomAttack: Command = (context: CommandContext) => {
     if (!randomCell) {
         throw new Error(`random position not found in game ${gameId}`);
     }
-    const status = game.getBoard(opponentPlayerId)?.isHit(randomCell.position) ? 'shot' : 'miss';
+    const board = game.getBoard(opponentPlayerId);
+    if (!board) {
+        throw new Error(`no board for player ${opponentPlayerId}`);
+    }
+    const status = board.getHitResult(randomCell.position);
     for (const playerId of game.playerIds) {
         const connection = getConnectionByPlayerId(playerId);
         if (!connection) {
             throw new Error(`connection for playerId ${playerId} does not exist`);
-        }
-        const ships = game.getBoard(playerId)?.getShips();
-        if (!ships) {
-            throw new Error(`player ${playerId} does not have ships`);
         }
         const notification: ClientResponse = {
             id: 0,
@@ -50,6 +51,19 @@ export const randomAttack: Command = (context: CommandContext) => {
             connection.socket.send(JSON.stringify(notification))
         }
     }
+
+    // if a ship is killed check if it was the last one
+        if (status === "killed") {
+            if (board.isAllShipsKilled()) {
+                finishGame({
+                    connectionContext,
+                    payload: {
+                        winPlayer: currentPlayerId
+                    }
+                })
+                return;
+            }
+        }
 
     // decide if we need to change current player
     const nextPlayerId = status === "miss" ? opponentPlayerId : currentPlayerId;

@@ -21,7 +21,7 @@ export class Game {
     public isReady():boolean {
         let fullBoardsCounter = 0;
         this.boards.values().forEach(board => {
-            if (board.isFull()) fullBoardsCounter++;
+            if (board.isPlacedShips()) fullBoardsCounter++;
         })
         return fullBoardsCounter === 2;
     }

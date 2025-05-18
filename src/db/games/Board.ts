@@ -9,6 +9,15 @@ const isPositionBelongToShip = (ship:Ship, position: {x: number, y: number}):boo
     }
 }
 
+const getCellByPosition = (cells: Cell[], position: {x:number, y:number}):Cell => {
+    const size = Math.sqrt(cells.length);
+     const cell = cells[position.x + position.y * size];
+     if (!cell) {
+        throw new Error(`invalid cell position: ${JSON.stringify(position)}`)
+     }
+     return cell;
+}
+
 const getAvailableCells = (cells: Cell[]):Cell[] => {
     return cells.filter(cell => !cell.isOpen);
 }
@@ -47,16 +56,31 @@ export class Board {
         return this.ships.slice();
     }
 
-    public isHit(position: {x:number, y:number}): boolean {
+    public getHitResult(position: {x:number, y:number}): "miss" | "killed" | "shot" {
         const {x, y} = position;
         for (const ship of this.ships) {
             const cell = this.cells.find(cell => cell.position.x === x && cell.position.y === y);
             if (cell) cell.isOpen = true;
             if (isPositionBelongToShip(ship, position)) {
-                return true;
+                return this.isShipKilled(ship) ? "killed" : "shot";
             }
         }
-        return false;
+        return "miss";
+    }
+
+    public isShipKilled(ship:Ship):boolean {
+        let killedCellCounter = 0;
+        let positions: {x: number, y:number}[] = [];
+        if (ship.direction) {
+            positions = Array.from({length: ship.length}, (_, index) => ({x: ship.position.x, y: ship.position.y + index}))
+        } else {
+            positions = Array.from({length: ship.length}, (_, index) => ({x: ship.position.x + index, y: ship.position.y}))
+        }
+        positions.forEach(position => {
+            const cell = getCellByPosition(this.cells, position);
+            killedCellCounter += cell.isOpen ? 1 : 0;
+        })
+        return killedCellCounter === ship.length;
     }
 
     public getRandomCell():Cell {
@@ -65,7 +89,15 @@ export class Board {
         return availableCells[randomIndex];
     }
 
-    public isFull():boolean {
+    public isPlacedShips():boolean {
         return this.ships.length === SHIP_COUNT;
+    }
+
+    public isAllShipsKilled():boolean {
+        let killedShipsCounter = 0;
+        this.ships.forEach(ship => {
+            if (this.isShipKilled(ship)) killedShipsCounter++;
+        })
+        return killedShipsCounter === SHIP_COUNT;
     }
 }
