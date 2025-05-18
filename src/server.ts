@@ -5,6 +5,7 @@ import {register} from './commands/register.js';
 import {createRoom} from './commands/createRoom.js';
 import {CommandContext} from './commands/types.js';
 import {joinRoom} from './commands/joinRoom.js';
+import {addShips} from './commands/addShips.js';
 
 const createServer = (port:number):WebSocketServer => {
     const server = new WebSocketServer({port});
@@ -26,7 +27,7 @@ const initializeConnection = (wss: WebSocketServer, ws:WebSocket) => {
         console.log(`open: id ${id}, ${JSON.stringify(event)}`);
     })
     ws.addEventListener('message', (event) => {
-        console.log(`received: id ${id}, ${JSON.stringify(event)}`);
+        console.log(`received: id ${id}}`);
         if (typeof event.data === 'string') {
             const message = JSON.parse(event.data) as ClientRequest;
             const context: CommandContext = {
@@ -42,6 +43,9 @@ const initializeConnection = (wss: WebSocketServer, ws:WebSocket) => {
                     break;
                 case MessageType.JOIN_ROOM:
                     joinRoom(context);
+                    break;
+                case MessageType.ADD_SHIPS:
+                    addShips(context);
                     break;
                 default:
                     console.warn(`unrecognised message ${message.type}`);

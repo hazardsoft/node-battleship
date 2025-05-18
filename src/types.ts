@@ -14,7 +14,9 @@ export const enum MessageType {
     CREATE_ROOM = "create_room",
     UPDATE_ROOMS = "update_room",
     JOIN_ROOM = "add_user_to_room",
-    CREATE_GAME = "create_game"
+    CREATE_GAME = "create_game",
+    ADD_SHIPS = "add_ships",
+    START_GAME = "start_game"
 }
 
 export type MessageId = number
@@ -64,4 +66,25 @@ export interface JoinRoomRequestPayload {
 export interface CreateGamePayload {
     idGame: GameId,  
     idPlayer: PlayerId // opponent's id
+}
+
+export interface Ship {
+    position: {
+        x: number,
+        y: number,
+    },
+    direction: boolean,
+    length: number,
+    type: "small"|"medium"|"large"|"huge"
+}
+
+export interface AddShipsRequestPayload {
+    gameId: GameId,
+    ships: Ship[],
+    indexPlayer: PlayerId
+}
+
+export interface StartGamePayload {
+    currentPlayerIndex: PlayerId,
+    ships: Ship[]
 }

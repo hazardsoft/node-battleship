@@ -1,3 +1,5 @@
+import {Ship} from "../types.js";
+
 export type PlayerId = string;
 
 export interface Player {
@@ -14,4 +16,8 @@ export interface Room {
     id: RoomId,
     gameId?: GameId,
     playersIds: PlayerId[],
+}
+export interface Game {
+    gameId: GameId,
+    playerShips: Map<PlayerId, Ship[]>
 }
