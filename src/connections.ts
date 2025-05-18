@@ -1,40 +1,31 @@
 import WebSocket from 'ws';
 import {Connection, ConnectionId} from "./types.js";
+import {PlayerId} from './db/types.js';
+import {generateConnectionId} from './utils.js';
 
-const connectionsById: Map<ConnectionId, WebSocket> = new Map();
-const connections: Map<WebSocket, ConnectionId> = new Map();
+const connections: Map<ConnectionId, Connection> = new Map();
 
-const addConnection = (id:ConnectionId, connection:WebSocket):Connection => {
-    connectionsById.set(id, connection);
-    connections.set(connection, id);
-    return {
-        id, socket: connection
-    }
+const addConnection = (ws:WebSocket):Connection => {
+    const connection: Connection = {
+        id: generateConnectionId(),
+        socket: ws
+    };
+    connections.set(connection.id, connection);
+    return connection;
 }
 
 const removeConnection = (id:ConnectionId) => {
-    const connectionExist = connectionsById.delete(id);
+    const connectionExist = connections.delete(id);
     if (!connectionExist) {
         console.warn(`connection ${id} does not exist`);
     }
 }
 
-const getConnectionById = (id:ConnectionId):Connection | null => {
-    if (connectionsById.has(id)) {
-        return {
-            id, socket: connectionsById.get(id)!
-        }
+const getConnectionByPlayerId = (playerId:PlayerId): Connection | null => {
+    for (const connection of connections.values()) {
+        if (connection.playerId === playerId) return connection;
     }
     return null;
 }
 
-const getConnectionBySocket = (ws:WebSocket):Connection | null => {
-    if (connections.has(ws)) {
-        return {
-            id: connections.get(ws)!, socket: ws
-        }
-    }
-    return null;
-}
-
-export {addConnection, removeConnection, getConnectionById, getConnectionBySocket};
+export {addConnection, removeConnection, getConnectionByPlayerId};

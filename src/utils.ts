@@ -1,9 +1,10 @@
-import {PlayerId} from "./db/types.js";
+import {GameId, PlayerId} from "./db/types.js";
 import {ConnectionId} from "./types.js";
 
 let connectionsCounter = 0;
 let playersCounter = 0;
 let roomsCounter = 0;
+let gamesCounter = 0;
 
 const generateConnectionId = ():ConnectionId => {
     return `connection_${connectionsCounter++}`;
@@ -17,4 +18,8 @@ const generateRoomId = ():PlayerId => {
     return `room_${roomsCounter++}`;
 }
 
-export {generateConnectionId, generatePlayerId, generateRoomId};
+const generateGameId = ():GameId => {
+    return `game_${gamesCounter++}`;
+}
+
+export {generateConnectionId, generatePlayerId, generateRoomId, generateGameId};

@@ -1,7 +1,6 @@
 import WebSocket, {WebSocketServer} from 'ws';
 import {addConnection, removeConnection} from './connections.js';
 import {ClientRequest, ConnectionId, MessageType} from './types.js';
-import {generateConnectionId} from './utils.js';
 import {register} from './commands/register.js';
 import {createRoom} from './commands/createRoom.js';
 import {CommandContext} from './commands/types.js';
@@ -19,7 +18,7 @@ const createServer = (port:number):WebSocketServer => {
 }
 
 const initializeConnection = (wss: WebSocketServer, ws:WebSocket) => {
-    const connection = addConnection(generateConnectionId(), ws);
+    const connection = addConnection(ws);
     const {id} = connection;
     console.log(`initialize connection: id ${id}`);
 

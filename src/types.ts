@@ -1,5 +1,5 @@
 import WebSocket from "ws";
-import {PlayerId, RoomId} from "./db/types.js";
+import {GameId, PlayerId, RoomId} from "./db/types.js";
 
 export type ConnectionId = string;
 
@@ -13,7 +13,8 @@ export const enum MessageType {
     REGISTER = "reg",
     CREATE_ROOM = "create_room",
     UPDATE_ROOMS = "update_room",
-    JOIN_ROOM = "add_user_to_room"
+    JOIN_ROOM = "add_user_to_room",
+    CREATE_GAME = "create_game"
 }
 
 export type MessageId = number
@@ -58,4 +59,9 @@ export type UpdateRoomsResponsePayload = RoomPayload[]
 
 export interface JoinRoomRequestPayload {
     indexRoom: RoomId
+}
+
+export interface CreateGamePayload {
+    idGame: GameId,  
+    idPlayer: PlayerId // opponent's id
 }

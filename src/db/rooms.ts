@@ -1,4 +1,4 @@
-import {generateRoomId} from "../utils.js";
+import {generateGameId, generateRoomId} from "../utils.js";
 import {GameId, PlayerId, Room, RoomId} from "./types.js";
 
 const rooms: Room[] = [];
@@ -18,11 +18,12 @@ const addPlayerToRoom = (id:RoomId, playerId:PlayerId) => {
     }
 }
 
-const startGameInRoom = (id:RoomId, gameId:GameId) => {
+const startGameInRoom = (id:RoomId): GameId | null => {
     const room = rooms.find(room => room.id === id);
     if (room) {
-        room.gameId = gameId;
+        return room.gameId = generateGameId();
     }
+    return null;
 }
 
 const endGameInRoom = (id:RoomId) => {
@@ -32,8 +33,15 @@ const endGameInRoom = (id:RoomId) => {
     }
 }
 
+const getRoomById = (id:RoomId): Room | null => {
+    for (const room of rooms.values()) {
+        if (room.id === id) return room;
+    }
+    return null;
+}
+
 const getAllRooms = ():Room[] => {
     return rooms.slice();
 }
 
-export {addRoom, addPlayerToRoom, startGameInRoom, endGameInRoom, getAllRooms};
+export {addRoom, addPlayerToRoom, startGameInRoom, endGameInRoom, getRoomById, getAllRooms};
