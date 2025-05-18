@@ -5,6 +5,7 @@ import {generateConnectionId} from './utils.js';
 import {register} from './commands/register.js';
 import {createRoom} from './commands/createRoom.js';
 import {CommandContext} from './commands/types.js';
+import {joinRoom} from './commands/joinRoom.js';
 
 const createServer = (port:number):WebSocketServer => {
     const server = new WebSocketServer({port});
@@ -39,6 +40,9 @@ const initializeConnection = (wss: WebSocketServer, ws:WebSocket) => {
                     break; 
                 case MessageType.CREATE_ROOM:
                     createRoom(context);
+                    break;
+                case MessageType.JOIN_ROOM:
+                    joinRoom(context);
                     break;
                 default:
                     console.warn(`unrecognised message ${message.type}`);

@@ -13,6 +13,7 @@ export const enum MessageType {
     REGISTER = "reg",
     CREATE_ROOM = "create_room",
     UPDATE_ROOMS = "update_room",
+    JOIN_ROOM = "add_user_to_room"
 }
 
 export type MessageId = number
@@ -54,3 +55,7 @@ export interface RoomPayload  {
 }
 
 export type UpdateRoomsResponsePayload = RoomPayload[]
+
+export interface JoinRoomRequestPayload {
+    indexRoom: RoomId
+}
