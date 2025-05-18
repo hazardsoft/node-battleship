@@ -1,4 +1,4 @@
-import WebSocket from "ws";
+import WebSocket, {WebSocketServer} from "ws";
 import {GameId, PlayerId, RoomId} from "./db/types.js";
 
 export type ConnectionId = string;
@@ -16,7 +16,8 @@ export const enum MessageType {
     JOIN_ROOM = "add_user_to_room",
     CREATE_GAME = "create_game",
     ADD_SHIPS = "add_ships",
-    START_GAME = "start_game"
+    START_GAME = "start_game",
+    CHANGE_TURN = "turn"
 }
 
 export type MessageId = number
@@ -32,6 +33,11 @@ export interface ClientRequest {
 }
 
 export type ClientResponse = ClientRequest;
+
+export interface ConnectionContext {
+    server: WebSocketServer,
+    connection: Connection
+}
 
 export interface RegisterRequestPayload {
     name: string;
@@ -87,4 +93,8 @@ export interface AddShipsRequestPayload {
 export interface StartGamePayload {
     currentPlayerIndex: PlayerId,
     ships: Ship[]
+}
+
+export interface TurnPayload {
+    currentPlayer: PlayerId
 }

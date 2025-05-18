@@ -1,8 +1,8 @@
 import {addPlayerToRoom, getRoomById} from "../db/rooms.js";
 import {JoinRoomRequestPayload} from "../types.js";
-import {createGame} from "./createGame.js";
+import {createGame} from "../notifications/createGame.js";
 import {Command, CommandContext} from "./types.js";
-import {updateRooms} from "./updateRooms.js";
+import {updateRooms} from "../notifications/updateRooms.js";
 
 export const joinRoom: Command = (context: CommandContext) => {
     const {connectionContext, message} = context;
@@ -17,10 +17,15 @@ export const joinRoom: Command = (context: CommandContext) => {
         throw new Error(`room ${roomId} does not exist`);
     }
     addPlayerToRoom(roomId, connectionContext.connection.playerId);
-    updateRooms(context);
+    updateRooms({
+        connectionContext,
+    });
     
     // if a room is full, let's start a game
     if (room.playersIds.length === 2) {
-        createGame(context);
+        createGame({
+            connectionContext, 
+            payload: {roomId}
+        });
     }
 }

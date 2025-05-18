@@ -1,7 +1,7 @@
 import {Command, CommandContext} from "./types.js";
 import {addRoom} from "../db/rooms.js";
 import {ClientResponse} from "../types.js";
-import {updateRooms} from "./updateRooms.js";
+import {updateRooms} from "../notifications/updateRooms.js";
 
 export const createRoom: Command = (context: CommandContext) => {
     const {connectionContext, message} = context;
@@ -15,7 +15,7 @@ export const createRoom: Command = (context: CommandContext) => {
     const response: ClientResponse = {
         id: message.id,
         type: message.type,
-        data: ''
+        data: 'Ok'
     }
     connectionContext.connection.socket.send(JSON.stringify(response));
     // send updated list of rooms to ALL players

@@ -1,14 +1,14 @@
 import {getConnectionByPlayerId} from "../connections.js";
 import {getRoomById, startGameInRoom} from "../db/rooms.js";
-import {PlayerId, Room} from "../db/types.js";
-import {ClientResponse, CreateGamePayload, JoinRoomRequestPayload, MessageType} from "../types.js";
-import {Command, CommandContext} from "./types.js";
+import {PlayerId, Room, RoomId} from "../db/types.js";
+import {ClientResponse, CreateGamePayload, MessageType} from "../types.js";
 import WebSocket from 'ws';
+import {NotificationContext} from "./types.js";
+import {getOpponentId} from "../utils.js";
 
-export const createGame: Command = (context: CommandContext) => {
-    const {connectionContext, message} = context;
-    const payload = JSON.parse(message.data) as JoinRoomRequestPayload;
-    const roomId = payload.indexRoom;
+export const createGame = (context: NotificationContext<{roomId:RoomId}>) => {
+    const {connectionContext, payload} = context;
+    const roomId = payload ? payload.roomId : "";
 
     if (!connectionContext.connection.playerId) {
         throw new Error(`connection does not have associated player`);
@@ -26,7 +26,7 @@ export const createGame: Command = (context: CommandContext) => {
         if (!connection) {
             throw new Error(`connection for playerId ${playerId} does not exist`);
         }
-        const opponentId = getOpponentId(room, playerId);
+        const opponentId = getOpponentId(room.playersIds, playerId);
         if (!opponentId) {
             throw new Error('could not find opponent id');
         }
@@ -42,12 +42,4 @@ export const createGame: Command = (context: CommandContext) => {
             connection.socket.send(JSON.stringify(notification))
         }
     })
-}
-const getOpponentId = (room: Room, playerId:PlayerId): PlayerId | null => {
-    for (const id of room.playersIds) {
-        if (id !== playerId) {
-            return id;
-        }
-    }
-    return null;
 }

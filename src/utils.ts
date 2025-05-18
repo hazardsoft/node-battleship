@@ -22,4 +22,13 @@ const generateGameId = ():GameId => {
     return `game_${gamesCounter++}`;
 }
 
-export {generateConnectionId, generatePlayerId, generateRoomId, generateGameId};
+const getOpponentId = (playerIds: PlayerId[], playerId:PlayerId): PlayerId | null => {
+    for (const id of playerIds) {
+        if (id !== playerId) {
+            return id;
+        }
+    }
+    return null;
+}
+
+export {generateConnectionId, generatePlayerId, generateRoomId, generateGameId, getOpponentId};

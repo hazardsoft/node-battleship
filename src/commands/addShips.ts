@@ -1,10 +1,11 @@
 import {addShipsToGameForPlayer, getGameById} from "../db/games.js";
 import {AddShipsRequestPayload} from "../types.js";
-import {startGame} from "./startGame.js";
+import {startGame} from "../notifications/startGame.js";
 import {Command, CommandContext} from "./types.js";
+import {turn} from "../notifications/turn.js";
 
 export const addShips: Command = (context: CommandContext) => {
-    const {message} = context;
+    const {message, connectionContext} = context;
 
     const payload = JSON.parse(message.data) as AddShipsRequestPayload;
     const {gameId, indexPlayer: playerId, ships} = payload;
@@ -17,6 +18,13 @@ export const addShips: Command = (context: CommandContext) => {
 
     // start game if both players placed their ships
     if (game.playerShips.size === 2) {
-        startGame(context);
+        startGame({
+            connectionContext,
+            payload: {gameId}
+        });
+        turn({
+            connectionContext,
+            payload: {gameId}
+        })
     }
 }

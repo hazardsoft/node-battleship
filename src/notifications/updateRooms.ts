@@ -1,10 +1,10 @@
 import {getPlayerById} from "../db/players.js";
 import {getAllRooms} from "../db/rooms.js";
 import {ClientResponse, MessageType, RoomPayload, RoomUserPayload} from "../types.js";
-import {Command, CommandContext} from "./types.js";
 import WebSocket from 'ws';
+import {NotificationContext} from "./types.js";
 
-export const updateRooms: Command = (context: CommandContext) => {
+export const updateRooms = (context: NotificationContext<never>) => {
     const {connectionContext} = context;
 
     const rooms = getAllRooms();
@@ -25,14 +25,14 @@ export const updateRooms: Command = (context: CommandContext) => {
         } satisfies RoomPayload;
     })
 
-    const response: ClientResponse = {
+    const notification: ClientResponse = {
         id: 0,
         type: MessageType.UPDATE_ROOMS,
         data: JSON.stringify(roomsPayload),
     }
     connectionContext.server.clients.forEach((socket) => {
         if (socket.readyState === WebSocket.OPEN) {
-            socket.send(JSON.stringify(response));
+            socket.send(JSON.stringify(notification));
         }
     });
 }

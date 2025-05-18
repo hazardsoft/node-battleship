@@ -1,11 +1,12 @@
 import {getConnectionByPlayerId} from "../connections.js";
 import {getGameById} from "../db/games.js";
-import {AddShipsRequestPayload, ClientResponse, MessageType, StartGamePayload} from "../types.js";
-import {Command, CommandContext} from "./types.js";
+import {GameId} from "../db/types.js";
+import {ClientResponse, MessageType, StartGamePayload} from "../types.js";
+import {NotificationContext} from "./types.js";
 
-export const startGame: Command = (context: CommandContext) => {
-    const {message} = context;
-    const {gameId} = JSON.parse(message.data) as AddShipsRequestPayload;
+export const startGame = (context: NotificationContext<{gameId: GameId}>) => {
+    const {payload} = context;
+    const gameId = payload ? payload.gameId : "";
 
     const game = getGameById(gameId);
     if (!game) {
