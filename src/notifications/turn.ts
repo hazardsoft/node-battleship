@@ -1,5 +1,5 @@
 import {getConnectionByPlayerId} from "../connections.js";
-import {getGameById} from "../db/games.js";
+import {getGameById} from "../db/games/games.js";
 import {GameId, PlayerId} from "../db/types.js";
 import {ClientResponse, MessageType, TurnPayload} from "../types.js";
 import {NotificationContext} from "./types.js";
@@ -16,13 +16,13 @@ export const turn = (context: NotificationContext<{gameId:GameId, nextPlayerId: 
     
     game.currentPlayerId = nextPlayerId;
     // notify room players about change of turn
-    const playerIds = Array.from(game.playerShips.keys());
+    const playerIds = game.playerIds;
     for (const playerId of playerIds) {
         const connection = getConnectionByPlayerId(playerId);
         if (!connection) {
             throw new Error(`connection for playerId ${playerId} does not exist`);
         }
-        const ships = game.playerShips.get(playerId);
+        const ships = game.getBoard(playerId)?.getShips();
         if (!ships) {
             throw new Error(`player ${playerId} does not have ships`);
         }

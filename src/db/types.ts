@@ -17,8 +17,3 @@ export interface Room {
     gameId?: GameId,
     playersIds: PlayerId[],
 }
-export interface Game {
-    gameId: GameId,
-    playerShips: Map<PlayerId, Ship[]>
-    currentPlayerId?: PlayerId
-}

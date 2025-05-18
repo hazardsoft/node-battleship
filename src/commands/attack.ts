@@ -1,9 +1,9 @@
 import {Command, CommandContext} from "./types.js";
 import {AttackPayload, AttackRequestPayload, ClientResponse, MessageType} from "../types.js";
-import {getGameById, isHit} from "../db/games.js";
 import {getConnectionByPlayerId} from "../connections.js";
 import {getOpponentId} from "../utils.js";
 import {turn} from "../notifications/turn.js";
+import {getGameById} from "../db/games/games.js";
 
 export const attack: Command = (context: CommandContext) => {
     const {message, connectionContext} = context;
@@ -18,18 +18,18 @@ export const attack: Command = (context: CommandContext) => {
         return;
     }
 
-    const playerIds = Array.from(game.playerShips.keys());
-    const opponentPlayerId = getOpponentId(playerIds, currentPlayerId);
+    const opponentPlayerId = getOpponentId(game.playerIds, currentPlayerId);
     if (!opponentPlayerId) {
         throw new Error(`could not find opponent to ${currentPlayerId} in game ${gameId}`);
     }
-    const status = isHit(gameId, opponentPlayerId, {x, y}) ? 'shot' : 'miss';
-    for (const playerId of playerIds) {
+    // const status = isHit(gameId, opponentPlayerId, {x, y}) ? 'shot' : 'miss';
+    const status = game.getBoard(opponentPlayerId)?.isHit({x, y}) ? 'shot' : 'miss';
+    for (const playerId of game.playerIds) {
         const connection = getConnectionByPlayerId(playerId);
         if (!connection) {
             throw new Error(`connection for playerId ${playerId} does not exist`);
         }
-        const ships = game.playerShips.get(playerId);
+        const ships = game.getBoard(playerId)?.getShips();
         if (!ships) {
             throw new Error(`player ${playerId} does not have ships`);
         }

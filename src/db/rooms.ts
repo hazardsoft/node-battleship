@@ -1,5 +1,5 @@
 import {generateRoomId} from "../utils.js";
-import {addGame} from "./games.js";
+import {addGame} from "./games/games.js";
 import {GameId, PlayerId, Room, RoomId} from "./types.js";
 
 const rooms: Room[] = [];
@@ -22,7 +22,7 @@ const addPlayerToRoom = (id:RoomId, playerId:PlayerId) => {
 const startGameInRoom = (id:RoomId): GameId | null => {
     const room = rooms.find(room => room.id === id);
     if (room) {
-        const game = addGame();
+        const game = addGame(room.playersIds);
         return room.gameId = game.gameId;
     }
     return null;

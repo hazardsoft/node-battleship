@@ -1,8 +1,8 @@
-import {addShipsToGameForPlayer, getGameById} from "../db/games.js";
 import {AddShipsRequestPayload} from "../types.js";
 import {startGame} from "../notifications/startGame.js";
 import {Command, CommandContext} from "./types.js";
 import {turn} from "../notifications/turn.js";
+import {getGameById} from "../db/games/games.js";
 
 export const addShips: Command = (context: CommandContext) => {
     const {message, connectionContext} = context;
@@ -14,10 +14,10 @@ export const addShips: Command = (context: CommandContext) => {
     if (!game) {
         throw new Error(`game ${payload.gameId} does not exist`);
     }
-    addShipsToGameForPlayer(gameId, playerId, ships);
+    game.getBoard(playerId)?.addShips(ships);
 
     // start game if both players placed their ships
-    if (game.playerShips.size === 2) {
+    if (game.isReady()) {
         startGame({
             connectionContext,
             payload: {gameId}
