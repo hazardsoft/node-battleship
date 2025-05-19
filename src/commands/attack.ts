@@ -1,10 +1,11 @@
 import {Command, CommandContext} from "./types.js";
-import {AttackPayload, AttackRequestPayload, ClientResponse, MessageType} from "../types.js";
+import {AttackPayload, AttackRequestPayload, ClientResponse, Connection, MessageType} from "../types.js";
 import {getConnectionByPlayerId} from "../connections.js";
 import {getOpponentId} from "../utils.js";
 import {turn} from "../notifications/turn.js";
 import {getGameById} from "../db/games/games.js";
 import {finishGame} from "../notifications/finishGame.js";
+import {PlayerId} from "../db/types.js";
 
 export const attack: Command = (context: CommandContext) => {
     const {message, connectionContext} = context;
@@ -28,23 +29,16 @@ export const attack: Command = (context: CommandContext) => {
         throw new Error(`no board for player ${opponentPlayerId}`);
     }
     const status = board.getHitResult({x, y});
+    const positionsAroundShip = status === "killed" ? board.openCellsAroundShip({x, y}) : [];
     for (const playerId of game.playerIds) {
         const connection = getConnectionByPlayerId(playerId);
         if (!connection) {
             throw new Error(`connection for playerId ${playerId} does not exist`);
         }
-        const notification: ClientResponse = {
-            id: 0,
-            type: MessageType.ATTACK,
-            data: JSON.stringify({
-                currentPlayer: currentPlayerId,
-                position: {x, y},
-                status
-            } satisfies AttackPayload)
-        }
-        if (connection.socket.readyState === WebSocket.OPEN) {
-            connection.socket.send(JSON.stringify(notification))
-        }
+        sendNotification(connection, currentPlayerId, {x, y}, status)
+        positionsAroundShip.forEach(position => {
+            sendNotification(connection, currentPlayerId, position, "miss")
+        })
     }
 
     // if a ship is killed check if it was the last one
@@ -69,4 +63,19 @@ export const attack: Command = (context: CommandContext) => {
             nextPlayerId
         }
     })
+}
+
+const sendNotification = (connection: Connection, currentPlayerId:PlayerId, position: {x:number, y:number}, status: "miss" | "shot" | "killed") => {
+    const notification: ClientResponse = {
+        id: 0,
+        type: MessageType.ATTACK,
+        data: JSON.stringify({
+            currentPlayer: currentPlayerId,
+            position,
+            status
+        } satisfies AttackPayload)
+    }
+    if (connection.socket.readyState === WebSocket.OPEN) {
+        connection.socket.send(JSON.stringify(notification))
+    }
 }

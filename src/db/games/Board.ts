@@ -11,15 +11,32 @@ const isPositionBelongToShip = (ship:Ship, position: {x: number, y: number}):boo
 
 const getCellByPosition = (cells: Cell[], position: {x:number, y:number}):Cell => {
     const size = Math.sqrt(cells.length);
-     const cell = cells[position.x + position.y * size];
-     if (!cell) {
+    const cell = cells[position.x + position.y * size];
+    if (!cell) {
         throw new Error(`invalid cell position: ${JSON.stringify(position)}`)
-     }
-     return cell;
+    }
+    return cell;
 }
 
 const getAvailableCells = (cells: Cell[]):Cell[] => {
     return cells.filter(cell => !cell.isOpen);
+}
+
+const getPositionsAroundShip = (ship:Ship):{x:number, y:number}[] => {
+    const startX = Math.max(ship.position.x - 1, 0);
+    const startY = Math.max(ship.position.y - 1, 0);
+    const endX = Math.min(ship.direction ? ship.position.x + 1 : ship.position.x + ship.length, SHIP_COUNT - 1);
+    const endY = Math.min(ship.direction ? ship.position.y + ship.length : ship.position.y + 1, SHIP_COUNT - 1);
+    
+    const positions = [];
+    for (let x = startX; x <= endX; x++) {
+        for (let y = startY; y <= endY; y++) {
+            if (!isPositionBelongToShip(ship, {x, y})) {
+                positions.push({x, y});
+            }
+        }
+    }
+    return positions;
 }
 
 interface Cell {
@@ -66,6 +83,20 @@ export class Board {
             }
         }
         return "miss";
+    }
+
+    public openCellsAroundShip(position: {x:number, y:number}):{x:number, y:number}[] {
+        for (const ship of this.ships) {
+            if (isPositionBelongToShip(ship, position)) {
+                const positions = getPositionsAroundShip(ship);
+                positions.forEach(position => {
+                    const cell = getCellByPosition(this.cells, position);
+                    if (cell) cell.isOpen = true
+                })
+                return positions;
+            }
+        }
+        return [];
     }
 
     public isShipKilled(ship:Ship):boolean {
