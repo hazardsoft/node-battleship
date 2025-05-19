@@ -23,19 +23,20 @@ const createServer = (port:number):WebSocketServer => {
 const initializeConnection = (wss: WebSocketServer, ws:WebSocket) => {
     const connection = addConnection(ws);
     const {id} = connection;
-    console.log(`initialize connection: id ${id}`);
+    console.log(`initialize: connection id (${id})`);
 
-    ws.addEventListener('open', (event) => {
-        console.log(`open: id ${id}, ${JSON.stringify(event)}`);
+    ws.addEventListener('open', () => {
+        console.log(`open: connection id (${id})`);
     })
     ws.addEventListener('message', (event) => {
-        console.log(`received: id ${id}`);
         if (typeof event.data === 'string') {
             const message = JSON.parse(event.data) as ClientRequest;
             const context: CommandContext = {
                 connectionContext: {server: wss, connection},
                 message
             };
+            console.log(`received: connection id (${id})`);
+            console.log(`<-- command '${message.type}', payload ${message.data || null}`);
             switch (message.type) {
                 case MessageType.REGISTER:
                     register(context);
@@ -56,17 +57,17 @@ const initializeConnection = (wss: WebSocketServer, ws:WebSocket) => {
                     randomAttack(context);
                     break;
                 default:
-                    console.warn(`unrecognised message ${message.type}`);
+                    console.warn(`unrecognised command '${message.type}'`);
                     break;
             }
         }
     })
     ws.addEventListener('error', (event) => {
-        console.error(`error: id ${id}, ${JSON.stringify(event)}`)
+        console.error(`error: connection id (${id}), ${JSON.stringify(event)}`)
         destroyConnection(id, ws);
     })
     ws.addEventListener('close', ()=> {
-        console.log(`closed: id ${id}`)
+        console.log(`closed: connection id (${id})`)
         destroyConnection(id, ws);
     })
 }

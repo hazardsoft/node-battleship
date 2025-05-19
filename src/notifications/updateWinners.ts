@@ -27,10 +27,12 @@ export const updateWinners = (context: NotificationContext<{currentUserId:Player
         if (!connection) {
             throw new Error(`connection for playerId ${currentUserId} does not exist`);
         }
+        console.log(`--> command '${notification.type}', payload ${notification.data}`);
         connection.socket.send(JSON.stringify(notification));
     } else {
         context.connectionContext.server.clients.forEach((socket) => {
             if (socket.readyState === WebSocket.OPEN) {
+                console.log(`--> command '${notification.type}', payload ${notification.data}`);
                 socket.send(JSON.stringify(notification));
             }
         });

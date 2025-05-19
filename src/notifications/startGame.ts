@@ -30,6 +30,7 @@ export const startGame = (context: NotificationContext<{gameId: GameId}>) => {
             } satisfies StartGamePayload)
         }
         if (connection.socket.readyState === WebSocket.OPEN) {
+            console.log(`--> command '${notification.type}', payload ${notification.data}`);
             connection.socket.send(JSON.stringify(notification))
         }
     }

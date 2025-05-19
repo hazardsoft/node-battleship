@@ -29,6 +29,7 @@ export const register: Command = (context: CommandContext) => {
                 errorText: '',
             } satisfies RegisterResponsePayload),
         }
+        console.log(`--> command '${response.type}', payload ${response.data}`);
         connectionContext.connection.socket.send(JSON.stringify(response));
     
         // send actual winners table to the logged in user only
@@ -44,6 +45,7 @@ export const register: Command = (context: CommandContext) => {
                 errorText: 'incorrect credentials'
             } satisfies RegisterResponsePayload),
         }
+        console.log(`--> command '${response.type}', payload ${response.data}`);
         connectionContext.connection.socket.send(JSON.stringify(response));
     }
 }

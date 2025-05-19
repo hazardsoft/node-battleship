@@ -34,6 +34,7 @@ export const turn = (context: NotificationContext<{gameId:GameId, nextPlayerId: 
             } satisfies TurnPayload)
         }
         if (connection.socket.readyState === WebSocket.OPEN) {
+            console.log(`--> command '${notification.type}', payload ${notification.data}`);
             connection.socket.send(JSON.stringify(notification))
         }
     }

@@ -6,8 +6,7 @@ import {updateRooms} from "../notifications/updateRooms.js";
 export const createRoom: Command = (context: CommandContext) => {
     const {connectionContext, message} = context;
 
-    const room = addRoom();
-    console.log(`room ${room.id} created`);
+    addRoom();
     if (!connectionContext.connection.playerId) {
         throw new Error(`connection does not have associated player`);
     }
@@ -17,6 +16,7 @@ export const createRoom: Command = (context: CommandContext) => {
         type: message.type,
         data: 'Ok'
     }
+    console.log(`--> command '${response.type}', payload ${response.data}`);
     connectionContext.connection.socket.send(JSON.stringify(response));
     // send updated list of rooms to ALL players
     updateRooms(context);

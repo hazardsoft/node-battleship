@@ -39,6 +39,7 @@ export const createGame = (context: NotificationContext<{roomId:RoomId}>) => {
             } satisfies CreateGamePayload)
         }
         if (connection.socket.readyState === WebSocket.OPEN) {
+            console.log(`--> command '${notification.type}', payload ${notification.data}`);
             connection.socket.send(JSON.stringify(notification))
         }
     })

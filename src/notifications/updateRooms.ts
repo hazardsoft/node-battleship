@@ -32,6 +32,7 @@ export const updateRooms = (context: NotificationContext<never>) => {
     }
     connectionContext.server.clients.forEach((socket) => {
         if (socket.readyState === WebSocket.OPEN) {
+            console.log(`--> command '${notification.type}', payload ${notification.data}`);
             socket.send(JSON.stringify(notification));
         }
     });

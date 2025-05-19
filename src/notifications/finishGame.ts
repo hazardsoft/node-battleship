@@ -29,6 +29,7 @@ export const finishGame = (context: NotificationContext<{winPlayer: PlayerId}>) 
             } satisfies FinishGamePayload)
         }
         if (connection.socket.readyState === WebSocket.OPEN) {
+            console.log(`--> command '${notification.type}', payload ${notification.data}`);
             connection.socket.send(JSON.stringify(notification))
         }
     }

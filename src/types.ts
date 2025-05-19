@@ -1,5 +1,5 @@
 import WebSocket, {WebSocketServer} from "ws";
-import {GameId, Player, PlayerId, RoomId} from "./db/types.js";
+import {GameId, PlayerId, RoomId} from "./db/types.js";
 
 export type ConnectionId = string;
 

@@ -17,7 +17,7 @@ const addConnection = (ws:WebSocket):Connection => {
 const removeConnection = (id:ConnectionId) => {
     const connectionExist = connections.delete(id);
     if (!connectionExist) {
-        console.warn(`connection ${id} does not exist`);
+        console.warn(`connection id (${id}) does not exist`);
     }
 }
 

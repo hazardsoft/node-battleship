@@ -16,7 +16,7 @@ export const attack: Command = (context: CommandContext) => {
         throw new Error(`game ${gameId} does not exist`);
     }
     if (game.currentPlayerId !== currentPlayerId) {
-        console.warn(`player ${currentPlayerId} tries to perform action not in theirs turn`);
+        console.warn(`player id (${currentPlayerId}) tries to perform action not in theirs turn`);
         return;
     }
 
@@ -76,6 +76,7 @@ const sendNotification = (connection: Connection, currentPlayerId:PlayerId, posi
         } satisfies AttackPayload)
     }
     if (connection.socket.readyState === WebSocket.OPEN) {
+        console.log(`--> command '${notification.type}', payload ${notification.data}`);
         connection.socket.send(JSON.stringify(notification))
     }
 }
