@@ -3,9 +3,12 @@ import {getAllRooms} from "../db/rooms.js";
 import {ClientResponse, MessageType, RoomPayload, RoomUserPayload} from "../types.js";
 import WebSocket from 'ws';
 import {NotificationContext} from "./types.js";
+import {getConnectionByPlayerId} from "../connections.js";
+import {PlayerId} from "../db/types.js";
 
-export const updateRooms = (context: NotificationContext<never>) => {
-    const {connectionContext} = context;
+export const updateRooms = (context: NotificationContext<{currentUserId:PlayerId}>) => {
+    const {payload} = context;
+    const currentUserId = payload ? payload.currentUserId : "";
 
     const rooms = getAllRooms();
     const availableRooms = rooms.filter(room => room.playersIds.length < 2);
@@ -30,10 +33,20 @@ export const updateRooms = (context: NotificationContext<never>) => {
         type: MessageType.UPDATE_ROOMS,
         data: JSON.stringify(roomsPayload),
     }
-    connectionContext.server.clients.forEach((socket) => {
-        if (socket.readyState === WebSocket.OPEN) {
-            console.log(`--> command '${notification.type}', payload ${notification.data}`);
-            socket.send(JSON.stringify(notification));
+    
+    if (currentUserId) {
+        const connection = getConnectionByPlayerId(currentUserId);
+        if (!connection) {
+            throw new Error(`connection for playerId ${currentUserId} does not exist`);
         }
-    });
+        console.log(`--> command '${notification.type}', payload ${notification.data}`);
+        connection.socket.send(JSON.stringify(notification));
+    } else {
+        context.connectionContext.server.clients.forEach((socket) => {
+            if (socket.readyState === WebSocket.OPEN) {
+                console.log(`--> command '${notification.type}', payload ${notification.data}`);
+                socket.send(JSON.stringify(notification));
+            }
+        });
+    }
 }

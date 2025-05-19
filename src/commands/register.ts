@@ -3,6 +3,7 @@ import {Command, CommandContext} from "./types.js";
 import {hasPlayer, loginPlayer, registerPlayer} from "../db/players.js";
 import {Player} from "../db/types.js";
 import {updateWinners} from "../notifications/updateWinners.js";
+import {updateRooms} from "../notifications/updateRooms.js";
 
 export const register: Command = (context: CommandContext) => {
     const {connectionContext, message} = context;
@@ -31,7 +32,8 @@ export const register: Command = (context: CommandContext) => {
         }
         console.log(`--> command '${response.type}', payload ${response.data}`);
         connectionContext.connection.socket.send(JSON.stringify(response));
-    
+        
+        updateRooms({connectionContext, payload: {currentUserId: player.id}});
         // send actual winners table to the logged in user only
         updateWinners({connectionContext, payload: {currentUserId: player.id}})
     } else {
