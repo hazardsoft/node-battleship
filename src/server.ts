@@ -29,7 +29,7 @@ const initializeConnection = (wss: WebSocketServer, ws:WebSocket) => {
         console.log(`open: id ${id}, ${JSON.stringify(event)}`);
     })
     ws.addEventListener('message', (event) => {
-        console.log(`received: id ${id}}`);
+        console.log(`received: id ${id}`);
         if (typeof event.data === 'string') {
             const message = JSON.parse(event.data) as ClientRequest;
             const context: CommandContext = {
