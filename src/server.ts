@@ -1,13 +1,13 @@
 import WebSocket, {WebSocketServer} from 'ws';
-import {addConnection, removeConnection} from './connections.js';
-import {ClientRequest, ConnectionId, MessageType} from './types.js';
-import {register} from './commands/register.js';
-import {createRoom} from './commands/createRoom.js';
-import {CommandContext} from './commands/types.js';
-import {joinRoom} from './commands/joinRoom.js';
-import {addShips} from './commands/addShips.js';
-import {attack} from './commands/attack.js';
-import {randomAttack} from './commands/randomAttack.js';
+import {addConnection, removeConnection} from './connections';
+import {MessageType, type ClientRequest, type ConnectionId} from './types';
+import {register} from './commands/register';
+import {createRoom} from './commands/createRoom';
+import type {CommandContext} from './commands/types';
+import {joinRoom} from './commands/joinRoom';
+import {addShips} from './commands/addShips';
+import {attack} from './commands/attack';
+import {randomAttack} from './commands/randomAttack';
 
 const createServer = (port:number):WebSocketServer => {
     const server = new WebSocketServer({port});

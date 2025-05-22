@@ -1,7 +1,7 @@
 import WebSocket from 'ws';
-import {Connection, ConnectionId} from "./types.js";
-import {PlayerId} from './db/types.js';
-import {generateConnectionId} from './utils.js';
+import type {Connection, ConnectionId} from "./types";
+import type {PlayerId} from './db/types';
+import {generateConnectionId} from './utils';
 
 const connections: Map<ConnectionId, Connection> = new Map();
 

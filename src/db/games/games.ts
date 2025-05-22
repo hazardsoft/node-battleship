@@ -1,6 +1,6 @@
-import {generateGameId} from "../../utils.js";
-import {GameId, PlayerId} from "../types.js";
-import {Game} from "./Game.js";
+import {generateGameId} from "../../utils";
+import type {GameId, PlayerId} from "../types";
+import {Game} from "./Game";
 
 const games: Map<GameId, Game> = new Map();
 

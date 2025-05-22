@@ -1,6 +1,6 @@
-import {generateRoomId} from "../utils.js";
-import {addGame} from "./games/games.js";
-import {GameId, PlayerId, Room, RoomId} from "./types.js";
+import {generateRoomId} from "../utils";
+import {addGame} from "./games/games";
+import type {GameId, PlayerId, Room, RoomId} from "./types";
 
 const rooms: Room[] = [];
 

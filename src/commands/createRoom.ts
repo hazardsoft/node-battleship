@@ -1,6 +1,6 @@
-import {Command, CommandContext} from "./types.js";
-import {addPlayerToRoom, addRoom} from "../db/rooms.js";
-import {updateRooms} from "../notifications/updateRooms.js";
+import type {Command, CommandContext} from "./types";
+import {addPlayerToRoom, addRoom} from "../db/rooms";
+import {updateRooms} from "../notifications/updateRooms";
 
 export const createRoom: Command = (context: CommandContext) => {
     const {connectionContext} = context;

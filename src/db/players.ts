@@ -1,5 +1,5 @@
-import {generatePlayerId} from "../utils.js";
-import {Player, PlayerId} from "./types.js";
+import {generatePlayerId} from "../utils";
+import type {Player, PlayerId} from "./types";
 
 const players: Map<string, Player> = new Map();
 

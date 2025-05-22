@@ -1,4 +1,4 @@
-import {ClientRequest, ConnectionContext} from "../types.js";
+import type {ClientRequest, ConnectionContext} from "../types";
 
 export interface CommandContext {
     connectionContext: ConnectionContext,

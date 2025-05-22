@@ -1,10 +1,10 @@
-import {getConnectionByPlayerId} from "../connections.js";
-import {getRoomById, startGameInRoom} from "../db/rooms.js";
-import {PlayerId, Room, RoomId} from "../db/types.js";
-import {ClientResponse, CreateGamePayload, MessageType} from "../types.js";
+import {getConnectionByPlayerId} from "../connections";
+import {getRoomById, startGameInRoom} from "../db/rooms";
+import type {PlayerId, Room, RoomId} from "../db/types";
+import {MessageType, type ClientResponse, type CreateGamePayload} from "../types";
 import WebSocket from 'ws';
-import {NotificationContext} from "./types.js";
-import {getOpponentId} from "../utils.js";
+import type {NotificationContext} from "./types";
+import {getOpponentId} from "../utils";
 
 export const createGame = (context: NotificationContext<{roomId:RoomId}>) => {
     const {connectionContext, payload} = context;

@@ -1,8 +1,8 @@
-import {addPlayerToRoom, getRoomById} from "../db/rooms.js";
-import {JoinRoomRequestPayload} from "../types.js";
-import {createGame} from "../notifications/createGame.js";
-import {Command, CommandContext} from "./types.js";
-import {updateRooms} from "../notifications/updateRooms.js";
+import {addPlayerToRoom, getRoomById} from "../db/rooms";
+import type {JoinRoomRequestPayload} from "../types";
+import {createGame} from "../notifications/createGame";
+import type {Command, CommandContext} from "./types";
+import {updateRooms} from "../notifications/updateRooms";
 
 export const joinRoom: Command = (context: CommandContext) => {
     const {connectionContext, message} = context;

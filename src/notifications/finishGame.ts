@@ -1,10 +1,10 @@
-import {getConnectionByPlayerId} from "../connections.js";
-import {getGameByPlayerId} from "../db/games/games.js";
-import {PlayerId} from "../db/types.js";
-import {addWinner} from "../db/winners.js";
-import {ClientResponse, FinishGamePayload, MessageType} from "../types.js";
-import {NotificationContext} from "./types.js";
-import {updateWinners} from "./updateWinners.js";
+import {getConnectionByPlayerId} from "../connections";
+import {getGameByPlayerId} from "../db/games/games";
+import type {PlayerId} from "../db/types";
+import {addWinner} from "../db/winners";
+import {MessageType, type ClientResponse, type FinishGamePayload} from "../types";
+import type {NotificationContext} from "./types";
+import {updateWinners} from "./updateWinners";
 
 export const finishGame = (context: NotificationContext<{winPlayer: PlayerId}>) => {
     const {payload, connectionContext} = context;
