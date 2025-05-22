@@ -1,4 +1,4 @@
-import {PlayerId} from "./types.js"
+import type {PlayerId} from "./types";
 
 const winners: Map<PlayerId, number> = new Map();
 

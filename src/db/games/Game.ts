@@ -1,5 +1,5 @@
-import {GameId, PlayerId} from "../types.js";
-import {Board} from "./Board.js";
+import type {GameId, PlayerId} from "../types";
+import {Board} from "./Board";
 
 const FIELD_SIZE = 10;
 

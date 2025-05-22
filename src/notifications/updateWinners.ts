@@ -1,9 +1,9 @@
-import {getConnectionByPlayerId} from "../connections.js";
-import {getPlayerById} from "../db/players.js";
-import {PlayerId} from "../db/types.js";
-import {getAllWinners, getWins} from "../db/winners.js";
-import {ClientResponse, MessageType, WinnerPayload} from "../types.js";
-import {NotificationContext} from "./types.js";
+import {getConnectionByPlayerId} from "../connections";
+import {getPlayerById} from "../db/players";
+import type {PlayerId} from "../db/types";
+import {getAllWinners, getWins} from "../db/winners";
+import {MessageType, type ClientResponse, type WinnerPayload} from "../types";
+import type {NotificationContext} from "./types";
 
 export const updateWinners = (context: NotificationContext<{currentUserId:PlayerId}>) => {
     const {payload} = context;

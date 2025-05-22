@@ -1,5 +1,5 @@
-import {GameId, PlayerId} from "./db/types.js";
-import {ConnectionId} from "./types.js";
+import type {GameId, PlayerId} from "./db/types";
+import type {ConnectionId} from "./types";
 
 let connectionsCounter = 0;
 let playersCounter = 0;

@@ -1,4 +1,4 @@
-import {Ship} from "../types.js";
+import type {Ship} from "../types";
 
 export type PlayerId = string;
 

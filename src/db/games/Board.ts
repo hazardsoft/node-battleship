@@ -1,4 +1,4 @@
-import {Ship} from "../../types.js";
+import type {Ship} from "../../types";
 
 const isPositionBelongToShip = (ship:Ship, position: {x: number, y: number}):boolean => {
     const {x, y} = position;

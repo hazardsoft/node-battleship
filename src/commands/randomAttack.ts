@@ -1,10 +1,10 @@
-import {Command, CommandContext} from "./types.js";
-import {AttackPayload, ClientResponse, MessageType, RandomAttackRequestPayload} from "../types.js";
-import {getConnectionByPlayerId} from "../connections.js";
-import {getOpponentId} from "../utils.js";
-import {turn} from "../notifications/turn.js";
-import {getGameById} from "../db/games/games.js";
-import {finishGame} from "../notifications/finishGame.js";
+import type {Command, CommandContext} from "./types";
+import {MessageType, type AttackPayload, type ClientResponse, type RandomAttackRequestPayload} from "../types";
+import {getConnectionByPlayerId} from "../connections";
+import {getOpponentId} from "../utils";
+import {turn} from "../notifications/turn";
+import {getGameById} from "../db/games/games";
+import {finishGame} from "../notifications/finishGame";
 
 export const randomAttack: Command = (context: CommandContext) => {
     const {message, connectionContext} = context;

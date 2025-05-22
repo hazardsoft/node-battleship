@@ -1,10 +1,10 @@
-import {getPlayerById} from "../db/players.js";
-import {getAllRooms} from "../db/rooms.js";
-import {ClientResponse, MessageType, RoomPayload, RoomUserPayload} from "../types.js";
+import {getPlayerById} from "../db/players";
+import {getAllRooms} from "../db/rooms";
+import {MessageType, type ClientResponse, type RoomPayload, type RoomUserPayload} from "../types";
 import WebSocket from 'ws';
-import {NotificationContext} from "./types.js";
-import {getConnectionByPlayerId} from "../connections.js";
-import {PlayerId} from "../db/types.js";
+import type {NotificationContext} from "./types";
+import {getConnectionByPlayerId} from "../connections";
+import type {PlayerId} from "../db/types";
 
 export const updateRooms = (context: NotificationContext<{currentUserId:PlayerId}>) => {
     const {payload} = context;

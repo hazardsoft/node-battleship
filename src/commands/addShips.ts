@@ -1,8 +1,8 @@
-import {AddShipsRequestPayload} from "../types.js";
-import {startGame} from "../notifications/startGame.js";
-import {Command, CommandContext} from "./types.js";
-import {turn} from "../notifications/turn.js";
-import {getGameById} from "../db/games/games.js";
+import type {AddShipsRequestPayload} from "../types";
+import {startGame} from "../notifications/startGame";
+import type {Command, CommandContext} from "./types";
+import {turn} from "../notifications/turn";
+import {getGameById} from "../db/games/games";
 
 export const addShips: Command = (context: CommandContext) => {
     const {message, connectionContext} = context;

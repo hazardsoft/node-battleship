@@ -1,9 +1,9 @@
-import {ClientResponse, RegisterRequestPayload, RegisterResponsePayload} from "../types.js";
-import {Command, CommandContext} from "./types.js";
-import {hasPlayer, loginPlayer, registerPlayer} from "../db/players.js";
-import {Player} from "../db/types.js";
-import {updateWinners} from "../notifications/updateWinners.js";
-import {updateRooms} from "../notifications/updateRooms.js";
+import type {ClientResponse, RegisterRequestPayload, RegisterResponsePayload} from "../types";
+import type {Command, CommandContext} from "./types";
+import {hasPlayer, loginPlayer, registerPlayer} from "../db/players";
+import type {Player} from "../db/types";
+import {updateWinners} from "../notifications/updateWinners";
+import {updateRooms} from "../notifications/updateRooms";
 
 export const register: Command = (context: CommandContext) => {
     const {connectionContext, message} = context;

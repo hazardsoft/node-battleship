@@ -1,8 +1,8 @@
-import {getConnectionByPlayerId} from "../connections.js";
-import {getGameById} from "../db/games/games.js";
-import {GameId} from "../db/types.js";
-import {ClientResponse, MessageType, StartGamePayload} from "../types.js";
-import {NotificationContext} from "./types.js";
+import {getConnectionByPlayerId} from "../connections";
+import {getGameById} from "../db/games/games";
+import type {GameId} from "../db/types";
+import {MessageType, type ClientResponse, type StartGamePayload} from "../types";
+import type {NotificationContext} from "./types";
 
 export const startGame = (context: NotificationContext<{gameId: GameId}>) => {
     const {payload} = context;
